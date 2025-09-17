@@ -16,7 +16,7 @@ pub mod transaction_config;
 #[derive(Clone)]
 pub struct JupiterSwapApiClient {
     pub base_path: String,
-    client: Client,
+    pub client: Client,
 }
 
 #[derive(Debug, Error)]
