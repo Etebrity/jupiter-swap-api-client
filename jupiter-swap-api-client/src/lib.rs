@@ -50,9 +50,20 @@ async fn check_status_code_and_deserialize<T: DeserializeOwned>(
 }
 
 impl JupiterSwapApiClient {
-    pub fn new(base_path: String) -> Self {
-        let client = Client::builder()
-            .pool_idle_timeout(std::time::Duration::from_secs(300))
+    pub fn new(base_path: String, api_key: Option<String>) -> Self {
+        let mut client_builder =
+            Client::builder().pool_idle_timeout(std::time::Duration::from_secs(300));
+
+        if let Some(key) = api_key {
+            let mut headers = reqwest::header::HeaderMap::with_capacity(1);
+            headers.append(
+                "x-api-key",
+                reqwest::header::HeaderValue::from_str(&key).expect("Invalid API key format"),
+            );
+            client_builder = client_builder.default_headers(headers);
+        }
+
+        let client = client_builder
             .build()
             .expect("Failed to create HTTP client");
 
